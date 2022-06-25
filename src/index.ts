@@ -55,15 +55,17 @@ wsServer.on('connection', function connection(ws: WebSocket) {
                 }
                 break;
             case 'draw':
+                const size_1 = Number(changedData[1]);
+                const size_2 = Number(changedData[2]);
                 switch (action[1]) {
                     case 'circle':
-                        drawCircle(Number(changedData[1]), x, y)
+                        drawCircle(size_1, x, y)
                         break;
                     case 'square':
-                        drawSquare(Number(changedData[1]), x, y)
+                        drawSquare(size_1, x, y)
                         break;
                     case 'rectangle':
-                        drawRectangle(Number(changedData[1]), Number(changedData[2]), x, y)
+                        drawRectangle(size_1, size_2, x, y)
                         break;
                 }
                 duplex.write(`${changedData[0]}`)
