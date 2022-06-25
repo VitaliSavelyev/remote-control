@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "baseUrl": "node_modules/@types",
+    "lib": [
+      "es6"
+    ],
+    "outDir": "dist",
+    "esModuleInterop": true,
+    "downlevelIteration": false,
+    "strict": true,
+    "noEmitOnError": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts"
+  ],
+  "include": [
+    "src/**/*",
+    "*.ts"
+  ]
+}
