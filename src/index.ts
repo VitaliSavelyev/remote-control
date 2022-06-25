@@ -83,13 +83,14 @@ wsServer.on('connection', function connection(ws: WebSocket) {
                             duplex.write(`prnt_scrn ${image} \0`);
                         })
                         .catch((error) => {
-                            console.log(`Error: ${error}`);
+                            throw Error;
                         });
                     break;
             }
+            console.log('Operation done')
         }
         catch (err) {
-            console.log('operation failed')
+            console.log('Operation failed')
         }
     });
     duplex.on("error", (err: Error) => {
