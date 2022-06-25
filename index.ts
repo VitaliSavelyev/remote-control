@@ -1,4 +1,3 @@
-import Jimp from 'jimp';
 import * as dotenv from 'dotenv';
 import path from 'path';
 import { httpServer } from './src/http_server';
@@ -7,6 +6,7 @@ import {createWebSocketStream, WebSocketServer,} from 'ws';
 import drawCircle from "./src/Methods/drawCircle";
 import drawSquare from "./src/Methods/drawSquare";
 import drawRectangle from "./src/Methods/drawRectangle";
+import screen from './src/Methods/screen'
 
 dotenv.config({
     path: path.join(__dirname, '../.env')
@@ -20,7 +20,7 @@ const wsServer = new WebSocketServer({
 
 const duplex = createWebSocketStream(wsServer, { decodeStrings: false, encoding: 'utf8' });
 
-duplex.on('connection', function connection(ws) {
+duplex.on('connection', function connection(wsServer) {
 
     duplex.on('message', function message(data) {
         const changedData: string[] = data.toString().split(' ');
@@ -67,11 +67,17 @@ duplex.on('connection', function connection(ws) {
                 duplex.write(`${changedData[0]}`)
                 break;
             case 'prnt_scrn':
+                screen(Number(changedData[1]), x, y)
+                    .then((image: string) => {
+                        duplex.write(`prnt_scrn ${image} \0`);
+                    })
+                    .catch((error) => {
+                        console.log(`Error: ${error}`);
+                    });
                 break;
         }
     });
-
-    ws.send('something');
+    duplex.write('something');
 });
 
 console.log(`Start static http server on the ${HTTP_PORT || 3000} port!`);
