@@ -1,32 +1,23 @@
 {
   "compilerOptions": {
-    "baseUrl": "node_modules/@types",
-    "lib": [
-      "es6"
-    ],
-    "outDir": "dist",
-    "esModuleInterop": true,
-    "downlevelIteration": false,
+    "target": "ES2015",
+    "module": "commonjs",
+    "allowJs": true,
+    "checkJs": false,
+    "outDir": "./dist",
+    "removeComments": true,
+    "downlevelIteration": true,
     "strict": true,
-    "noEmitOnError": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedIndexedAccess": true,
-    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitAny": true,
     "moduleResolution": "node",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "sourceMap": true
   },
-  "exclude": [
-    "node_modules",
-    "**/*.spec.ts"
-  ],
-  "include": [
-    "src/**/*",
-    "*.ts"
-  ]
+  "exclude": ["./dist/**/*", "node_modules"]
 }
+
+

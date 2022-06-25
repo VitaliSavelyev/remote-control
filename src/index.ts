@@ -1,12 +1,12 @@
 import * as dotenv from 'dotenv';
 import path from 'path';
-import { httpServer } from './src/http_server';
+import { httpServer } from './http_server';
 import robot from 'robotjs';
-import {createWebSocketStream, WebSocketServer,} from 'ws';
-import drawCircle from "./src/Methods/drawCircle";
-import drawSquare from "./src/Methods/drawSquare";
-import drawRectangle from "./src/Methods/drawRectangle";
-import screen from './src/Methods/screen'
+import {createWebSocketStream, WebSocket, WebSocketServer,} from 'ws';
+import drawCircle from "./Methods/drawCircle";
+import drawSquare from "./Methods/drawSquare";
+import drawRectangle from "./Methods/drawRectangle";
+import screen from './Methods/screen'
 
 dotenv.config({
     path: path.join(__dirname, '../.env')
@@ -18,21 +18,23 @@ const wsServer = new WebSocketServer({
     port: Number(WSS_PORT) || 8080,
 })
 
-const duplex = createWebSocketStream(wsServer, { decodeStrings: false, encoding: 'utf8' });
-
-duplex.on('connection', function connection(wsServer) {
-
-    duplex.on('message', function message(data) {
-        const changedData: string[] = data.toString().split(' ');
+wsServer.on('connection', function connection(ws: WebSocket) {
+    const duplex = createWebSocketStream(ws, { decodeStrings: false, encoding: 'utf8' });
+    duplex.on('data', async (data: string) => {
+        const changedData: string[] = data.split(' ');
         const action = changedData[0] ? changedData[0].split('_') : [];
-        console.log(changedData)
         const { x, y } = robot.getMousePos();
+        if (changedData[0] === 'mouse_position') {
+            console.log(`Recieved: mouse_position ${x},${y}`);
+        } else {
+            console.log(`Recieved: ${changedData[0]} ${changedData[1] || ''} ${changedData[2] || ''}`);
+        }
         switch (action[0]) {
             case 'mouse':
                 const shift = Number(changedData[1]);
                 switch (action[1]) {
                     case 'position':
-                        duplex.write(`mouse_position ${x},${y}`)
+                        duplex.write(`mouse_position ${x},${y} \0`)
                         break;
                     case 'up':
                         robot.moveMouse(x, y - shift);
@@ -66,8 +68,9 @@ duplex.on('connection', function connection(wsServer) {
                 }
                 duplex.write(`${changedData[0]}`)
                 break;
-            case 'prnt_scrn':
-                screen(Number(changedData[1]), x, y)
+            case 'prnt':
+                const side: number = 200;
+                await screen(side, x, y)
                     .then((image: string) => {
                         duplex.write(`prnt_scrn ${image} \0`);
                     })
@@ -77,6 +80,9 @@ duplex.on('connection', function connection(wsServer) {
                 break;
         }
     });
+    duplex.on("error", (err: Error) => {
+        console.log(err)
+    })
     duplex.write('something');
 });
 
